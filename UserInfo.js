@@ -19,5 +19,3 @@ export const user = {
   password: "1234",
   accounts,
 };
-
-//document.getElementById("btnPlaceOrder").disabled = true;

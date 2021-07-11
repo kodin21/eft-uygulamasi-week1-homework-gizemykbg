@@ -1,15 +1,15 @@
 import { accounts, user } from "./UserInfo";
 console.log(accounts);
 
-function createElement(secim, transferIban, odeme, btnGonder) {
+function createElement(transferIban) {
   let i = `
     <div class="dropdown">
-    <select id="secim" onclick=() class="dropbtn">
+    <select id="secim"  class="dropbtn">
   </select>
       </div>
       <div>
     <label for="ftransafer"></label>
-    <input type="textBox" id="${transferIban}" name="transferIban" placeholder="trxx yyyy xxxx xyyx">
+    <input type="textBox" id="transferIban" name="transferIban" placeholder="trxx yyyy xxxx xyyx">
  
     <input type="numericBox" id="odeme" placeholder="Odeme Miktarı">
     
@@ -25,7 +25,7 @@ function createElement(secim, transferIban, odeme, btnGonder) {
 
 let node = document.querySelector("#container");
 node.innerHTML = createElement();
-
+let transferIban = document.querySelector("#transferIban");
 const timeLeftDisplay = document.querySelector("#timer");
 const sendButton = document.querySelector("#btnGonder");
 const timeLeft = 3;
@@ -44,17 +44,28 @@ function countDown() {
 console.log(timeLeft);
 sendButton.addEventListener("click", countDown);
 
-function setSelectedItem(selectObj, valueToSet) {
-  for (var i = 0; i < selectObj.o.length; i++) {
-    if (selectObj.o[i].text == valueToSet) {
-      selectObj.o[i].selected = true;
-      return;
-    }
+var dropdown = document.getElementById("secim");
+dropdown &&
+  accounts.forEach(function (e) {
+    var accountNumber = `Hesap No: ${e.iban} - Bakiye: ${e.hesapMiktar} `;
+    var accounts = document.createElement("option");
+    accounts.innerText = accountNumber;
+    dropdown.appendChild(accounts);
+    activeButton();
+  });
+
+function activeButton() {
+  if (transferIban) {
+    document.getElementById("sendButton").disabled = false;
+  } else if (!transferIban) {
+    document.getElementById("sendButton").disabled = true;
   }
 }
 
 function transferMoney(miktar) {
-  var bakiye = 2000;
+  accounts.forEach(function (e) {
+    var bakiye = `${e.hesapMiktar}`;
+  });
   console.log(bakiye);
   if (miktar < 0 && miktar > bakiye) {
     alert("geçerli miktar giriniz");
@@ -85,14 +96,3 @@ function miktarGirisi() {
 }
 
 document.querySelector("#btnGonder").addEventListener("click", miktarGirisi);
-
-var options = accounts;
-
-var select = document.querySelector("#secim");
-options.forEach((item) => {
-  var o = document.createElement("option");
-  o.value = item.value;
-  o.innerText = item.label;
-
-  select.appendChild(o);
-});
